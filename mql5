@@ -1,0 +1,126 @@
+mql5
+//+------------------------------------------------------------------+
+//|                                  Super Fibo - Fibonacci Levels  |
+//|                           Developer: Forex Robot Easy Team       |
+//|                           Website:   forexroboteasy.com          |
+//+------------------------------------------------------------------+
+#property copyright 'Forex Robot Easy Team'
+#property link      'forexroboteasy.com'
+
+//+------------------------------------------------------------------+
+//|                           Input Parameters                       |
+//+------------------------------------------------------------------+
+input double HighPrice; // High price point
+input double LowPrice;  // Low price point
+
+//+------------------------------------------------------------------+
+//|                        Custom Fibonacci Levels                    |
+//+------------------------------------------------------------------+
+double fibLevels[8]; // Array to store Fibonacci levels
+
+//+------------------------------------------------------------------+
+//|                      Custom Fibonacci Ratios                      |
+//+------------------------------------------------------------------+
+double fibRatios[7] = {0.0, 0.236, 0.382, 0.5, 0.618, 0.786, 1.0}; // Fibonacci ratios
+
+//+------------------------------------------------------------------+
+//|                       Custom Fibonacci Colors                     |
+//+------------------------------------------------------------------+
+color fibColors[8] = {Red, Green, Blue, Yellow, Orange, Violet, Brown, Pink}; // Fibonacci level colors
+
+//+------------------------------------------------------------------+
+//|                 Custom Fibonacci Level Calculation                |
+//+------------------------------------------------------------------+
+void CalculateFibLevels()
+{
+    double fibRange = HighPrice - LowPrice;
+
+    for (int i = 0; i < ArraySize(fibLevels); i++)
+    {
+        fibLevels[i] = LowPrice + fibRange * fibRatios[i];
+    }
+}
+
+//+------------------------------------------------------------------+
+//|                             Custom Chart Drawing                  |
+//+------------------------------------------------------------------+
+void DrawFibLevels()
+{
+    for (int i = 0; i < ArraySize(fibLevels); i++)
+    {
+        ObjectCreate(0, 'FibLevel_' + IntegerToString(i), OBJ_HLINE, 0, fibLevels[i]);
+        ObjectSetInteger(0, 'FibLevel_' + IntegerToString(i), OBJPROP_COLOR, fibColors[i]);
+        ObjectSetInteger(0, 'FibLevel_' + IntegerToString(i), OBJPROP_STYLE, STYLE_DOT);
+    }
+}
+
+//+------------------------------------------------------------------+
+//|                          Custom Initialization                    |
+//+------------------------------------------------------------------+
+void OnInit()
+{
+    CalculateFibLevels();
+    DrawFibLevels();
+}
+
+//+------------------------------------------------------------------+
+//|                         Custom Deinitialization                   |
+//+------------------------------------------------------------------+
+void OnDeinit(const int reason)
+{
+    for (int i = 0; i < ArraySize(fibLevels); i++)
+    {
+        ObjectDelete(0, 'FibLevel_' + IntegerToString(i));
+    }
+}
+
+//+------------------------------------------------------------------+
+//|                            Custom Entry                           |
+//+------------------------------------------------------------------+
+void OnTick()
+{
+    // Entry logic goes here
+}
+
+//+------------------------------------------------------------------+
+//|                           Custom Exit                             |
+//+------------------------------------------------------------------+
+bool ShouldExit()
+{
+    // Exit logic goes here
+
+    return false;
+}
+
+//+------------------------------------------------------------------+
+//|                           Custom Money Management                 |
+//+------------------------------------------------------------------+
+void ManageMoney()
+{
+    // Money management logic goes here
+}
+
+//+------------------------------------------------------------------+
+//|                           Custom Trading                          |
+//+------------------------------------------------------------------+
+void SuperFibo()
+{
+    OnInit();
+
+    while (!ShouldExit())
+    {
+        OnTick();
+        ManageMoney();
+        Sleep(1000); // Delay to reduce CPU usage for demo purposes
+    }
+
+    OnDeinit(0);
+}
+
+//+------------------------------------------------------------------+
+//|                          Custom Program Start                      |
+//+------------------------------------------------------------------+
+void OnStart()
+{
+    SuperFibo();
+}
